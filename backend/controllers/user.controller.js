@@ -3,6 +3,8 @@ import bcrypt from 'bcrypt'
 import User from "../model/user.model.js"
 import jwt from 'jsonwebtoken'
 import { v2 as cloudinary } from 'cloudinary'
+import Appointment from "../model/appointment.model.js"
+import Doctor from "../model/doctor.model.js"
 //API TO REGISTER USER
 const registerUser = async (req,res) => {
     try {
@@ -111,4 +113,55 @@ const updateUserProfile = async (req,res) => {
     }
 }
 
-export {registerUser,userLogin,getProfileData,updateUserProfile}
+//AI FOR BOOK APPOINTMENT
+const bookAppointment = async (req,res) => {
+    try {
+        const {userId, docId, slotDate, slotTime} = req.body
+        
+        const docData = await Doctor.findById(docId).select('-password')
+        if(!docData.available){
+            return res.status(400).json({success:false, message:'doctor not available'})
+        }
+
+        let slots_book = docData.slots_book
+
+        //check for slot avilability
+        if(slots_book[slotDate]){
+            if(slots_book[slotDate].includes(slotTime)){
+                return res.status(400).json({success:false, message:'slot not available'})
+            }else{
+                slots_book[slotDate].push(slotTime)
+            }
+        }else{
+            slots_book[slotDate] = []
+            slots_book[slotDate].push(slotTime)
+        }
+
+        const userData = await User.findById(userId)
+
+        // delete docData.slots_book
+
+        const appointmentData = {
+            userId,
+            docId,
+            slotDate,
+            slotTime,
+            amount:docData.fees,
+            doctorData:docData,
+            userData,
+            date:Date.now()
+        }
+
+        const newAppointment = await Appointment(appointmentData)
+        await newAppointment.save()
+
+        // SAVE NEW SLOTS DATA IN DOCTOR DATA
+        await Doctor.findByIdAndUpdate(docId,{slots_book})
+        
+        res.status(200).json({success:true, message:'appointment booked successfully'})
+    } catch (error) {
+        return res.status(400).json({success:false, message:error.message})
+    }
+}
+
+export {registerUser,userLogin,getProfileData,updateUserProfile,bookAppointment}
