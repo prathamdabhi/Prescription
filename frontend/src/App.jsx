@@ -11,6 +11,7 @@ import MyApointment from './pages/MyApointment'
 import Apointment from './pages/Apointment'
 import Navbar from './components/Navbar'
 import Fotter from './components/Fotter'
+import PaymentForm from './pages/Payment'
 
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -33,7 +34,7 @@ function App() {
             <Route path='/my-profile' element={<MyProfile/>} />
             <Route path='/my-apointments' element={<MyApointment/>} />
             <Route path='/apointment/:docid' element={<Apointment/>} />
-
+            <Route path='/payment' element={<PaymentForm/>} />
           </Routes>
           <Fotter />
      </div>

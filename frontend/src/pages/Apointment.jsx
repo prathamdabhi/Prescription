@@ -53,7 +53,7 @@ function Apointment() {
         let formetteTime = currentDate.toLocaleTimeString([],{hour: '2-digit', minute:'2-digit'})
 
         //check if slot is not available
-        let day = currentDate.getDay()
+        let day = currentDate.getDate()
         let month = currentDate.getMonth() + 1
         let year = currentDate.getFullYear()
         const slotDate = day + "_" + month + "_" + year
@@ -86,7 +86,7 @@ function Apointment() {
     try {
       const date = docSlots[slotIndex][0].dateTime
 
-      let day = date.getDay()
+      let day = date.getDate()
       let month = date.getMonth() + 1
       let year = date.getFullYear()
 

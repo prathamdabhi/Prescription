@@ -5,6 +5,9 @@ import jwt from 'jsonwebtoken'
 import { v2 as cloudinary } from 'cloudinary'
 import Appointment from "../model/appointment.model.js"
 import Doctor from "../model/doctor.model.js"
+import randombytes from 'randombytes'
+import Payment from "../model/payment.model.js"
+import randomBytes from "randombytes"
 //API TO REGISTER USER
 const registerUser = async (req,res) => {
     try {
@@ -113,7 +116,7 @@ const updateUserProfile = async (req,res) => {
     }
 }
 
-//AI FOR BOOK APPOINTMENT
+//API FOR BOOK APPOINTMENT
 const bookAppointment = async (req,res) => {
     try {
         const {userId, docId, slotDate, slotTime} = req.body
@@ -164,4 +167,78 @@ const bookAppointment = async (req,res) => {
     }
 }
 
-export {registerUser,userLogin,getProfileData,updateUserProfile,bookAppointment}
+//API FOR GET APPOINTMENT DATA
+const getAppointmentData = async (req,res) => {
+    try {
+        const {userId} = req.body;
+        const appointments = await Appointment.find({userId})
+        res.json({success:true, appointments})
+    } catch (error) {
+        return res.status(400).json({success:false, message:error.message})
+    }
+}
+
+//API FOR CENCELL APPOINMENT
+ const cancellAppointment =  async (req,res) => {
+    try {
+        const {userId,appointmentId } = req.body
+
+        const appointmentData = await Appointment.findById(appointmentId);
+
+        //VERIFY APPOINTMENT USER
+        if(appointmentData.userId !== userId){
+            return res.json({success:false, message:'you are not authorized to cancel this appointment'})
+        }
+
+        await Appointment.findByIdAndUpdate(appointmentId,{cancelled:true})
+
+        //RELEASING DOCTOR SLOT
+        const {docId,slotDate,slotTime} = appointmentData;
+
+        const doctorData = await Doctor.findById(docId);
+        let slots_book = doctorData.slots_book
+
+        slots_book[slotDate] = slots_book[slotDate].filter(e => e !== slotTime)
+
+        await Doctor.findByIdAndUpdate(docId,{slots_book})
+
+        res.json({success:true,message:'Appointment Cencelled'});
+
+    } catch (error) {
+        return res.status(400).json({success:false, message:error.message})
+    }
+ }
+
+
+ // API FOR CREATE PAYMENT
+  const createPayment = async (req,res) => {
+    try {
+        const {cardHolderName,craditCardNumber,date,ccv} = req.body
+        if(!cardHolderName || !craditCardNumber || !ccv){
+            return res.status(400).json({success:false, message:'please fill all fields'})
+        }
+
+         const transactionId = randomBytes(10).toString('hex');
+
+         const paymentData = {
+            cardHolderName,
+            craditCardNumber,
+            date,
+            ccv,
+            transactionId,
+            amount:0,
+            paymentStatus:false
+         }
+
+         const newPayment = await Payment(paymentData);
+         const payment = await newPayment.save();
+         res.status(200).json({success:true, payment})
+    } catch (error) {
+        return res.status(400).json({success:false, message:error.message})
+    }
+  }
+
+ 
+
+
+export {registerUser,userLogin,getProfileData,updateUserProfile,bookAppointment,getAppointmentData,cancellAppointment,createPayment}
