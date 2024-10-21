@@ -99,7 +99,7 @@ const updateUserProfile = async (req,res) => {
             return res.status(400).json({success:false, message:'please fill all fields'})
         }
 
-        const userdata = await User.findByIdAndUpdate(userId,{name,phone,address:JSON.parse(address),gender,dob})
+        const userData = await User.findByIdAndUpdate(userId,{name,phone,address:JSON.parse(address),gender,dob})
         if(imageFile){
             const upoadImage = await cloudinary.uploader.upload(imageFile.path,{resource_type:'image'})
             const imageUrl = upoadImage.secure_url
