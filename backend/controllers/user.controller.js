@@ -209,25 +209,71 @@ const getAppointmentData = async (req,res) => {
     }
  }
 
+ const changepaymentStatus = async (req,res) => {
+    try {
+        const { appointmentId } = req.body
+        const appointmentData = await Appointment.findById(appointmentId)
+
+        if(appointmentData.payment){
+            return res.status(400).json({success:false, message:'payment already done'})
+        }
+
+        const paymentData = await Appointment.findByIdAndUpdate(appointmentId,{payment:true})
+
+        return res.status(200).json({success:true, message:'payment done successfully'})
+
+    }catch (error) {
+        return res.status(400).json({success:false, message:error.message})
+    }
+ 
+}
+
+ //get amount
+ const getAmount = async (req,res) => {
+    try {
+        const {appointmentId} = req.body
+        const appointmentData = await Appointment.findById(appointmentId)
+       return res.status(200).json({success:true, appointmentData})
+    } catch (error) {
+        return res.status(400).json({success:false, message:error.message})
+    }
+    }
+
+    //API FOR DELERTING APPOINMENT
+    const deleteAppointment = async (req,res) => {
+        try {
+            const { appointmentId } = req.body
+            const appointmentData = await Appointment.findByIdAndDelete(appointmentId)
+            return res.status(200).json({success:true, message:'appointment deleted successfully'})
+        } catch (error) {
+            return res.status(400).json({success:false, message:error.message})
+        }
+    }
+
+
+ 
+
 
  // API FOR CREATE PAYMENT
   const createPayment = async (req,res) => {
     try {
-        const {cardHolderName,craditCardNumber,date,ccv} = req.body
-        if(!cardHolderName || !craditCardNumber || !ccv){
+        const {cardHolderName,craditCardNumber,date,cvv,paymentStatus,appointmentId,amount} = req.body
+        if(!cardHolderName || !craditCardNumber || !cvv){
             return res.status(400).json({success:false, message:'please fill all fields'})
         }
 
          const transactionId = randomBytes(10).toString('hex');
 
+         const appointmentData = await Appointment.findById(appointmentId);
+
          const paymentData = {
             cardHolderName,
             craditCardNumber,
             date,
-            ccv,
+            cvv,
             transactionId,
-            amount:0,
-            paymentStatus:false
+            amount,
+            paymentStatus
          }
 
          const newPayment = await Payment(paymentData);
@@ -241,4 +287,5 @@ const getAppointmentData = async (req,res) => {
  
 
 
-export {registerUser,userLogin,getProfileData,updateUserProfile,bookAppointment,getAppointmentData,cancellAppointment,createPayment}
+export {registerUser,userLogin,getProfileData,updateUserProfile,bookAppointment,getAppointmentData,cancellAppointment,
+    createPayment,getAmount,changepaymentStatus,deleteAppointment}
