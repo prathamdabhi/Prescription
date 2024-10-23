@@ -3,10 +3,12 @@ import {assets} from '../assets/assets_admin/assets.js'
 import { AdminContext } from '../context/AdminContext.jsx';
 import axios from 'axios'
 import { toast } from 'react-toastify';
+import { DocterContext } from '../context/DocterContext.jsx';
 
 const Login = () => {
     const [state, setState] = useState('Admin');
   const {setAtoken,backendUrl} =  useContext(AdminContext);
+  const {setDtoken} = useContext(DocterContext);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
@@ -20,6 +22,16 @@ const Login = () => {
                 localStorage.setItem('atoken', data.token);
                 setAtoken(data.token);
                 toast.success('Login successful');
+            } else {
+                toast.error(data.message || 'Invalid credentials');
+            }
+        }else{
+            const {data} = await axios.post(`${backendUrl}/api/v1/doctor/login`,{email,password});
+            if(data.success){
+                localStorage.setItem('dtoken', data.token);
+                setDtoken(data.token);
+                toast.success('Login successful');
+                console.log(data.token)
             } else {
                 toast.error(data.message || 'Invalid credentials');
             }
