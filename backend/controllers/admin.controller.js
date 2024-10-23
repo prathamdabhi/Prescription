@@ -5,6 +5,7 @@ import { json } from "express"
 import Doctor from "../model/doctor.model.js"
 import jwt from 'jsonwebtoken'
 import Appointment from "../model/appointment.model.js"
+import User from "../model/user.model.js"
 //add doctor
 const addDoctor = async (req,res)=>{
    try {
@@ -95,4 +96,49 @@ const appointmentAdmin = async (req,res) => {
    }
 }
 
-export {addDoctor,loginAdmin,getDoctorList,appointmentAdmin}
+// API TO CANCEL APPOINTMENT
+const appointmentCancel = async (req,res) => {
+   try {
+      const {appointmentId } = req.body
+
+      const appointmentData = await Appointment.findById(appointmentId);
+
+      await Appointment.findByIdAndUpdate(appointmentId,{cancelled:true})
+
+      //RELEASING DOCTOR SLOT
+      const {docId,slotDate,slotTime} = appointmentData;
+
+      const doctorData = await Doctor.findById(docId);
+      let slots_book = doctorData.slots_book
+
+      slots_book[slotDate] = slots_book[slotDate].filter(e => e !== slotTime)
+
+      await Doctor.findByIdAndUpdate(docId,{slots_book})
+
+      res.json({success:true,message:'Appointment Cencelled'});
+
+  } catch (error) {
+      return res.status(400).json({success:false, message:error.message})
+  }
+}
+
+//API TO GET DASHBOARD DATA
+const adminDashboard = async (req,res) => {
+   try {
+      const doctors = await Doctor.find({})
+      const users = await User.find({})
+      const appointments = await Appointment.find({})
+      const dashData = {
+         doctors : doctors.length,
+         appointments : appointments.length,
+         patients : users.length,
+         latestAppointments : appointments.reverse().slice(0,5)
+      }
+
+      res.status(200).json({success:true, dashData})
+   } catch (error) {
+      return res.status(400).json({success:false, message:error.message})
+   }
+}
+
+export {addDoctor,loginAdmin,getDoctorList,appointmentAdmin,appointmentCancel, adminDashboard}
