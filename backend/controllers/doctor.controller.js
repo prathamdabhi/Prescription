@@ -65,4 +65,71 @@ const appointmentsDoctor = async (req,res) => {
         res.status(400).json({success:false, message:error.message})
     }
 }
-export {changeDoctorAvailability,doctorList,doctorLogin,appointmentsDoctor}
+
+//API TO MARK APPOINTMENT COMPLETED FOR DOCTOR PANNEL
+const appointmentCompleted = async (req,res) => {
+    try {
+        const { docId , appointmentId } = req.body;
+        const appointmentData = await Appointment.findById(appointmentId);
+
+        if(appointmentData && appointmentData.docId === docId){
+            await Appointment.findByIdAndUpdate(appointmentId,{isCompleted:true});
+            res.status(200).json({success:true, message:'appointment Completed'})
+        }else{
+            res.status(400).json({success:false, message:'something went wrong'})
+        }
+    } catch (error) {
+        res.status(400).json({success:false, message:error.message})
+    }
+}
+
+//API TO CANCEL APPOINTMENT  FOR DOCTOR PANNEL
+const appointmentCancel = async (req,res) => {
+    try {
+        const { docId , appointmentId } = req.body;
+        const appointmentData = await Appointment.findById(appointmentId);
+
+        if(appointmentData && appointmentData.docId === docId){
+            await Appointment.findByIdAndUpdate(appointmentId,{cancelled:true});
+            res.status(200).json({success:true, message:'Appointment cancelled'})
+        }else{
+            res.status(400).json({success:false, message:'something went wrong'})
+        }
+    } catch (error) {
+        res.status(400).json({success:false, message:error.message})
+    }
+}
+
+//API TO GET DASHBOARD DATA FOR DOCTOR PANNEL
+const doctorDashboard = async(req,res) => {
+    try {
+        const {docId} = req.body;
+        const   appointments = await Appointment.find({docId});
+
+        let earning = 0;
+        appointments.map((item)=>{
+            if(item.isCompleted || item.payment){
+                earning += item.amount
+            }
+        })
+
+        let patients = [];
+
+        appointments.map((item)=>{
+            if(!patients.includes(item.userId)){
+                patients.push(item.userId)
+            }
+        })
+
+        const dashData = {
+            earning,
+            appointments: appointments.length,
+            patients: patients.length,
+            latestAppointments: appointments.reverse().slice(0,5)
+        }
+        res.status(200).json({success:true, dashData})
+    } catch (error) {
+        res.status(400).json({success:false, message:error.message})
+    }
+}
+export {changeDoctorAvailability,doctorList,doctorLogin,appointmentsDoctor, appointmentCompleted, appointmentCancel, doctorDashboard}

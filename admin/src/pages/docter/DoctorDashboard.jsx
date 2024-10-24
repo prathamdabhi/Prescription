@@ -1,7 +1,15 @@
-import React from 'react'
+import React, { useContext, useEffect } from 'react'
+import { DocterContext } from '../../context/DocterContext'
 
 const DoctorDashboard = () => {
-  return (
+  const {  getDashData,dashData,setDashData,dtoken } = useContext(DocterContext);
+
+  useEffect(() => {
+    if(dtoken){
+      getDashData();
+    }
+  }, [dtoken]);
+  return dashData && (
     <div>
       DoctorDashboard
     </div>
