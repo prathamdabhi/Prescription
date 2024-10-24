@@ -11,6 +11,7 @@ const AppProvider = (props) =>{
         return age
     }
     const currencySymbol = '$'
+    const backendUrl = import.meta.env.VITE_BACKEND_URL
     const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
     const slotDateFormate = (slotDate) => {
       const dateArreay = slotDate.split('_');
@@ -19,7 +20,8 @@ const AppProvider = (props) =>{
     const value = {
         calculateAge,
         slotDateFormate,
-        currencySymbol
+        currencySymbol,
+        backendUrl
     }
 
     return(

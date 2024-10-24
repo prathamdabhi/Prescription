@@ -109,13 +109,14 @@ function MyApointment() {
               </div>
               <div></div>
               <div className='flex flex-col gap-2 justify-center'>
-                {!item.cancelled &&  !item.payment && <button  onClick={()=>makePayment(item._id)} className='text-sm text-stone-700 text-center sm:min-w-48 py-2 border rounded hover:bg-primary hover:text-white transition-all duration-200'>
+                {!item.cancelled &&  !item.payment && !item.isCompleted && <button  onClick={()=>makePayment(item._id)} className='text-sm text-stone-700 text-center sm:min-w-48 py-2 border rounded hover:bg-primary hover:text-white transition-all duration-200'>
                   Pay Online
                 </button>}
-               {!item.cancelled &&  <button onClick={()=>cancelledAppointment(item._id)} className='text-sm text-stone-700 text-center sm:min-w-48 py-2 border rounded hover:bg-red-700 hover:text-white transition-all duration-200'>
+               {!item.cancelled && !item.isCompleted && <button onClick={()=>cancelledAppointment(item._id)} className='text-sm text-stone-700 text-center sm:min-w-48 py-2 border rounded hover:bg-red-700 hover:text-white transition-all duration-200'>
                   Cancel Appointment
                 </button>}
-                {item.cancelled && <button onClick={()=>deleteAppointment(item._id)} className='sm:min-w-48 py-2 border border-red-500 text-red-500 rounded'>Appointment Delete</button>}
+                {item.cancelled && !item.isCompleted && <button onClick={()=>deleteAppointment(item._id)} className='sm:min-w-48 py-2 border border-red-500 text-red-500 rounded'>Appointment Delete</button>}
+                {item.isCompleted && <button className='sm:min-w-48 py-2 border border-green-500 text-green-500 rounded'>Selected</button>}
               </div>
             </div>
           ))

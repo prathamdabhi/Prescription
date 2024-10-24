@@ -38,9 +38,9 @@ function Doctors() {
           <div onClick={()=>{navigate(`/apointment/${item._id}`); scrollTo(0,0)}} className='border border-blue-200 rounded-xl overflow-hidden cursor-pointer hover:translate-y-[-10px] transition-all duration-300' key={item._id}>
               <img className='bg-blue-50' src={item.image} alt="" />
               <div className='p-4 '>
-                  <div className='flex items-center gap-2 text-sm text-center text-green-400'>
-                      <p className='w-2 h-2 rounded-full bg-green-400'></p><p>Available</p>
-                  </div>
+              <div className='flex items-center gap-2 text-sm text-center text-green-400'>
+                            <p className={`w-2 h-2 ${ item.available ? 'bg-green-400' : 'bg-red-400'} rounded-full`} rounded-full ></p><p className={`${ item.available ? 'text-green-400' : 'text-red-400'}`}>{ item.available ? 'Available' : 'Not Available'}</p>
+                        </div>
                   <p className='text-gray-900 text-lg font-medium'>{item.name}</p>
                   <p className='text-gray-600 text-sm'>{item.speciality}</p>
               </div>
