@@ -1,8 +1,8 @@
-import React from 'react'
-import Header from '../components/Header'
-import SpecialityMenu from '../components/SpecialityMenu'
-import TopDoctors from '../components/TopDoctors'
-import BottomBanner from '../components/BottomBanner'
+import React from "react";
+import Header from "../components/Header";
+import SpecialityMenu from "../components/SpecialityMenu";
+import TopDoctors from "../components/TopDoctors";
+import BottomBanner from "../components/BottomBanner";
 
 function Home() {
   return (
@@ -12,7 +12,7 @@ function Home() {
       <TopDoctors />
       <BottomBanner />
     </div>
-  )
+  );
 }
 
-export default Home
+export default Home;

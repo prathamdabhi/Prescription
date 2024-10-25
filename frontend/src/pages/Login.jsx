@@ -1,47 +1,52 @@
 import React, { useContext, useEffect, useState } from "react";
 import { AppContext } from "../context/AppContext";
-import axios from 'axios';
+import axios from "axios";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
-
 
 function Login() {
   const [state, setState] = useState("Sign Up");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [name, setName] = useState("");
-  const { backendUrl, token, setToken } = useContext(AppContext); 
+  const { backendUrl, token, setToken } = useContext(AppContext);
 
   const onSubmitHandler = async (e) => {
     e.preventDefault();
     try {
-      if (state === 'Sign Up'){
-        const { data } = await axios.post(`${backendUrl}/api/v1/user/register`,{name,email,password})
-        if(data.success){
-          toast.success('User registered successfully')
-          setToken(data.token)
-          localStorage.setItem('token',data.token);
-        }else{
-          toast.error(data.message)
+      if (state === "Sign Up") {
+        const { data } = await axios.post(
+          `${backendUrl}/api/v1/user/register`,
+          { name, email, password }
+        );
+        if (data.success) {
+          toast.success("User registered successfully");
+          setToken(data.token);
+          localStorage.setItem("token", data.token);
+        } else {
+          toast.error(data.message);
         }
-      }else{
-        const { data } = await axios.post(`${backendUrl}/api/v1/user/login`,{email,password})
-        if(data.success){
-          toast.success('User logged in successfully')
-          setToken(data.token)
-          localStorage.setItem('token',data.token);
-        }else{
-          toast.error(data.message)
+      } else {
+        const { data } = await axios.post(`${backendUrl}/api/v1/user/login`, {
+          email,
+          password,
+        });
+        if (data.success) {
+          toast.success("User logged in successfully");
+          setToken(data.token);
+          localStorage.setItem("token", data.token);
+        } else {
+          toast.error(data.message);
         }
       }
     } catch (error) {
-      console.log(error.message)
+      console.log(error.message);
     }
   };
   const navigate = useNavigate();
   useEffect(() => {
-    if(token){
-      navigate('/');
+    if (token) {
+      navigate("/");
     }
   }, [token]);
   return (
@@ -91,7 +96,10 @@ function Login() {
             required
           />
         </div>
-        <button type="submit" className="bg-primary text-white py-2 px-9 rounded-full border mt-2 w-full hover:scale-105 transition-all duration-300">
+        <button
+          type="submit"
+          className="bg-primary text-white py-2 px-9 rounded-full border mt-2 w-full hover:scale-105 transition-all duration-300"
+        >
           {state === "Sign Up" ? "Create Account" : "Sign In"}
         </button>
         {state === "Sign Up" ? (

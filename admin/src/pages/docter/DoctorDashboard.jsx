@@ -4,7 +4,14 @@ import { assets } from "../../assets/assets_admin/assets";
 import { AppContext } from "../../context/AppContext";
 
 const DoctorDashboard = () => {
-  const { getDashData, dashData, setDashData, dtoken, completeAppointment,cancelAppointment } = useContext(DocterContext);
+  const {
+    getDashData,
+    dashData,
+    setDashData,
+    dtoken,
+    completeAppointment,
+    cancelAppointment,
+  } = useContext(DocterContext);
 
   const { currencySymbol, slotDateFormate } = useContext(AppContext);
 
@@ -74,25 +81,27 @@ const DoctorDashboard = () => {
                   </p>
                 </div>
                 {item.cancelled ? (
-              <p className="text-red-500 text-xs font-medium">Cancelled</p>
-            ) : item.isCompleted ? (
-              <p className="text-green-500 text-xs font-medium">Completed</p>
-            ) : (
-              <div className="flex">
-                <img
-                  onClick={() => cancelAppointment(item._id)}
-                  className="w-10 cursor-pointer"
-                  src={assets.cancel_icon}
-                  alt=""
-                />
-                <img
-                  onClick={() => completeAppointment(item._id)}
-                  className="w-10 cursor-pointer"
-                  src={assets.tick_icon}
-                  alt=""
-                />
-              </div>
-            )}
+                  <p className="text-red-500 text-xs font-medium">Cancelled</p>
+                ) : item.isCompleted ? (
+                  <p className="text-green-500 text-xs font-medium">
+                    Completed
+                  </p>
+                ) : (
+                  <div className="flex">
+                    <img
+                      onClick={() => cancelAppointment(item._id)}
+                      className="w-10 cursor-pointer"
+                      src={assets.cancel_icon}
+                      alt=""
+                    />
+                    <img
+                      onClick={() => completeAppointment(item._id)}
+                      className="w-10 cursor-pointer"
+                      src={assets.tick_icon}
+                      alt=""
+                    />
+                  </div>
+                )}
               </div>
             ))}
           </div>

@@ -2,7 +2,7 @@ import React, { useContext, useState } from "react";
 import { toast } from "react-toastify";
 import { AppContext } from "../context/AppContext";
 import { useNavigate, useLocation } from "react-router-dom";
-import axios from 'axios';
+import axios from "axios";
 
 function PaymentForm() {
   const [cardHolderName, setCardHolderName] = useState("");
@@ -26,17 +26,16 @@ function PaymentForm() {
     try {
       const { data } = await axios.post(
         `${backendUrl}/api/v1/user/create-payment`,
-        { cardHolderName, craditCardNumber, cvv, appointmentId, amount  },
+        { cardHolderName, craditCardNumber, cvv, appointmentId, amount },
         { headers: { token } }
       );
 
       if (data.success) {
         toast.success("Payment Successful");
-        navigate('/my-apointments');
+        navigate("/my-apointments");
       } else {
         toast.error(data.message);
       }
-
     } catch (error) {
       console.log(error);
       toast.error(error.message);
@@ -48,11 +47,16 @@ function PaymentForm() {
       <div className="flex flex-col gap-5 m-auto items-start p-8 min-w-[340px] sm:min-w-98 border rounded-xl text-zinc-600 text-sm shadow-lg">
         <p className="text-2xl font-semibold">Payment Details</p>
         <p>Please enter your payment information to proceed</p>
-        
+
         <p className="text-lg font-semibold">Amount to Pay: ${amount}</p>
 
         <div className="w-full flex flex-col mb-1">
-          <label className="text-zinc-600 font-medium text-[17px]" htmlFor="cardholderName">Cardholder Name:</label>
+          <label
+            className="text-zinc-600 font-medium text-[17px]"
+            htmlFor="cardholderName"
+          >
+            Cardholder Name:
+          </label>
           <input
             className="border-2 py-0.4 px-1 w-full rounded mt-1 text-zinc-600 text-sm focus:outline-blue-500"
             type="text"
@@ -64,7 +68,12 @@ function PaymentForm() {
         </div>
 
         <div className="w-full flex flex-col mb-1">
-          <label className="text-zinc-600 font-medium text-[17px]" htmlFor="craditCardNumber">Card Number:</label>
+          <label
+            className="text-zinc-600 font-medium text-[17px]"
+            htmlFor="craditCardNumber"
+          >
+            Card Number:
+          </label>
           <input
             className="border-2 py-0.4 px-1 w-full rounded mt-1 text-zinc-600 text-sm focus:outline-blue-500"
             type="text"
@@ -78,7 +87,12 @@ function PaymentForm() {
         </div>
 
         <div className="w-full flex flex-col mb-1">
-          <label className="text-zinc-600 font-medium text-[17px]" htmlFor="cvv">CVV:</label>
+          <label
+            className="text-zinc-600 font-medium text-[17px]"
+            htmlFor="cvv"
+          >
+            CVV:
+          </label>
           <input
             className="border-2 py-0.4 px-1 w-full rounded mt-1 text-zinc-600 text-sm focus:outline-blue-500"
             type="text"
