@@ -120,6 +120,11 @@ const updateUserProfile = async (req, res) => {
       const imageUrl = upoadImage.secure_url;
       await User.findByIdAndUpdate(userId, { image: imageUrl });
     }
+        // Update the user's name in their appointments
+        await Appointment.updateMany(
+          { userId },
+          { $set: { "userData.name": name } }
+        );
     res
       .status(200)
       .json({ success: true, message: "user data updated successfully" });
@@ -127,6 +132,7 @@ const updateUserProfile = async (req, res) => {
     return res.status(400).json({ success: false, message: error.message });
   }
 };
+
 
 //API FOR BOOK APPOINTMENT
 const bookAppointment = async (req, res) => {
