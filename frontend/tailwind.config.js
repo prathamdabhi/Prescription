@@ -14,6 +14,7 @@ export default {
       },
       screens:{
         '800-1000':{'min':'800px','max':'1000px'},
+         '550-800':{'min':'550px','max':'800px'}
       }
     },
   },
