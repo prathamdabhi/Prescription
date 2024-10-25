@@ -30,7 +30,7 @@ function Header() {
       {/* right side */}
       <div className="md:w-1/2 relative mt-10 md:mt-0">
         <img
-          className="w-full 800-1000:left-[10rem] h-auto absolute bottom-0 rounded-lg"
+          className="w-full 800-1000:left-[10rem] 550-800:h-[32vh] 550-800:w-[36%] 550-800:left-[8rem] h-auto absolute bottom-0 rounded-lg"
           src={assets.header_img}
           alt=""
         />
